@@ -1,2 +1,2 @@
 # FamilyTree
-Side project used to keep track of family connections
+Random project used to keep track of family connections
