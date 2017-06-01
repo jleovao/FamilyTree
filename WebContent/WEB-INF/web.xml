@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app
+  PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN"
+  "http://java.sun.com/j2ee/dtds/web-app_2_2.dtd">
+
+<web-app>
+  <display-name>Shopping App</display-name>
+  <description>
+    This application demonstrates how SQL queries are executed
+	within JSP pages
+  </description>
+  
+  <servlet>
+    <servlet-name>home</servlet-name>
+    <jsp-file>/index.jsp</jsp-file>
+  </servlet>
+  
+  <servlet>
+    <servlet-name>welcome_page</servlet-name>
+    <jsp-file>/welcome_page.jsp</jsp-file>
+  </servlet>
+  
+  <servlet>
+    <servlet-name>signup</servlet-name>
+    <jsp-file>/signup.jsp</jsp-file>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>home</servlet-name>
+    <url-pattern>home</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>welcome_page</servlet-name>
+    <url-pattern>welcome_page</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>signup</servlet-name>
+    <url-pattern>signup</url-pattern>
+  </servlet-mapping>
+  
+  <welcome-file-list>
+  	<welcome-file>
+  	  welcome_page
+  	</welcome-file>
+  </welcome-file-list>
+  
+
+</web-app>
