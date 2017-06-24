@@ -21,11 +21,25 @@
   %>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Home</title>
+<style>
+	body {
+  		text-align: center;
+  		background: url("./images/background_textured_blue.jpg");
+  		background-size: cover;
+  		background-position: center center;
+  		background-repeat: no-repeat;
+  		background-attachment: fixed;
+  		color: white;
+    }
+  </style>
+  <title>Home</title>
 </head>
 <body>
   <div class="container">
   <h1>Family Tree Menu</h1>
+  
+  <%out.println("<h4>Hello, "+name+"!</h4>");%>
+  
   <%-- Import the java.sql package --%>
   <%@ page import="java.sql.*"%>
   <%@ page import="java.util.*"%>
@@ -45,24 +59,83 @@
       "jdbc:postgresql://localhost/FamilyTree?" +
       "user=postgres&password=7124804");
   %>
+  
+  <%-- -------- INSERT Code -------- --%>
+  <%
+  String action = request.getParameter("action");
+  
+  // Check if an insertion is requested
+  if (action != null && action.equals("insert")) {
+    // Begin transaction
+    conn.setAutoCommit(false);
+    pstmt = conn.prepareStatement("INSERT INTO TREES(tree_name,creator) VALUES(?, ?)");
+    pstmt.setString(1, request.getParameter("tree_name"));
+    pstmt.setString(2, request.getParameter("creator"));
+    
+    int rowCount = pstmt.executeUpdate();
+    
+    // Commit transaction
+    conn.commit();
+    conn.setAutoCommit(true);
+  }
+  %>
+  
+  <%-- -------- UPDATE Code -------- --%>
+        <%
+        // Check if an update is requested
+        if (action != null && action.equals("update")) {
+
+        // Begin transaction
+        conn.setAutoCommit(false);
+        pstmt = conn.prepareStatement("UPDATE trees SET tree_name = ?, creator = ? WHERE tree_id = ?");
+
+        pstmt.setString(1, request.getParameter("tree_name"));
+        pstmt.setString(2, request.getParameter("creator"));
+        pstmt.setInt(3, Integer.parseInt(request.getParameter("tree_id")));
+        int rowCount = pstmt.executeUpdate();
+
+        // Commit transaction
+        conn.commit();
+        conn.setAutoCommit(true);
+        }
+        %>
+        
+        <%-- -------- DELETE Code -------- --%>
+        <%
+        // Check if a delete is requested
+        if (action != null && action.equals("delete")) {
+
+        // Begin transaction
+        conn.setAutoCommit(false);
+        pstmt = conn.prepareStatement("DELETE FROM trees WHERE tree_id = ?");
+
+        pstmt.setInt(1, Integer.parseInt(request.getParameter("tree_id")));
+        int rowCount = pstmt.executeUpdate();
+
+        // Commit transaction
+        conn.commit();
+        conn.setAutoCommit(true);
+        }
+        %>
+  
   <div class="displayTable">
   <table border="1">
     <tr>
       <th>Tree Name</th>
       <th>Creator</th>
-      <th>Action</th>
+      <th colspan="2">Action</th>
     </tr>
     <tr>
       <form action="./index.jsp" method="POST">
         <input type="hidden" name="action" value="insert"/>
         <th><input value="" name="tree_name"/></th>
         <th><input value="" name="creator"/></th>
-	    <th><input type="submit" value="Insert"/></th>
+	    <th colspan="2"><input type="submit" value="Insert"/></th>
       </form>
     </tr>
     <%
     Statement creator_stmnt = conn.createStatement();
-    rs = creator_stmnt.executeQuery("Select * from trees");
+    rs = creator_stmnt.executeQuery("Select * from trees where creator ='" + name + "'");
     while(rs.next()) {
     %>
     <tr>
