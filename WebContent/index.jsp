@@ -31,12 +31,22 @@
   		background-attachment: fixed;
   		color: white;
     }
+    div.menu {
+    	float: left;
+    	color:aqua;
+   		text-decoration: none; 
+   		background-color: none;
+    }
+    div.displayTable {
+    	text-align: left;
+    	color: white;
+    }
   </style>
   <title>Home</title>
 </head>
-<body>
+<body link="aqua" vlink="#808080" alink="#FF0000">
   <div class="container">
-  <h1>Family Tree Menu</h1>
+  <h1>Family Tree Settings</h1>
   
   <%out.println("<h4>Hello, "+name+"!</h4>");%>
   
@@ -117,6 +127,13 @@
         conn.setAutoCommit(true);
         }
         %>
+  <div class="menu">
+  <ul>
+  	<li><a href="/FamilyTree/welcome_page">Login Page</li>
+  	<li><a href="/FamilyTree/home">Tree Settings</li>
+  	
+  </ul>
+  </div>
   
   <div class="displayTable">
   <table border="1">
