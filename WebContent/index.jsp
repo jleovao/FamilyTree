@@ -31,22 +31,12 @@
   		background-attachment: fixed;
   		color: white;
     }
-    div.menu {
-    	float: left;
-    	color:aqua;
-   		text-decoration: none; 
-   		background-color: none;
-    }
-    div.displayTable {
-    	text-align: left;
-    	color: white;
-    }
   </style>
   <title>Home</title>
 </head>
-<body link="aqua" vlink="#808080" alink="#FF0000">
+<body>
   <div class="container">
-  <h1>Family Tree Settings</h1>
+  <h1>Family Tree Menu</h1>
   
   <%out.println("<h4>Hello, "+name+"!</h4>");%>
   
@@ -63,7 +53,6 @@
   {
   // Registering Postgresql JDBC driver with the DriverManager
   Class.forName("org.postgresql.Driver");
-
   // Open a connection to the database using DriverManager
   conn = DriverManager.getConnection(
       "jdbc:postgresql://localhost/FamilyTree?" +
@@ -94,16 +83,13 @@
         <%
         // Check if an update is requested
         if (action != null && action.equals("update")) {
-
         // Begin transaction
         conn.setAutoCommit(false);
         pstmt = conn.prepareStatement("UPDATE trees SET tree_name = ?, creator = ? WHERE tree_id = ?");
-
         pstmt.setString(1, request.getParameter("tree_name"));
         pstmt.setString(2, request.getParameter("creator"));
         pstmt.setInt(3, Integer.parseInt(request.getParameter("tree_id")));
         int rowCount = pstmt.executeUpdate();
-
         // Commit transaction
         conn.commit();
         conn.setAutoCommit(true);
@@ -114,26 +100,16 @@
         <%
         // Check if a delete is requested
         if (action != null && action.equals("delete")) {
-
         // Begin transaction
         conn.setAutoCommit(false);
         pstmt = conn.prepareStatement("DELETE FROM trees WHERE tree_id = ?");
-
         pstmt.setInt(1, Integer.parseInt(request.getParameter("tree_id")));
         int rowCount = pstmt.executeUpdate();
-
         // Commit transaction
         conn.commit();
         conn.setAutoCommit(true);
         }
         %>
-  <div class="menu">
-  <ul>
-  	<li><a href="/FamilyTree/welcome_page">Login Page</li>
-  	<li><a href="/FamilyTree/home">Tree Settings</li>
-  	
-  </ul>
-  </div>
   
   <div class="displayTable">
   <table border="1">
