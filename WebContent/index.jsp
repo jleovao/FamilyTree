@@ -31,12 +31,22 @@
   		background-attachment: fixed;
   		color: white;
     }
+    div.nav {
+    	float: left;
+    	color: white;
+    }
   </style>
   <title>Home</title>
 </head>
-<body>
+<body link="aqua" vlink="#808080" alink="#FF0000">
   <div class="container">
   <h1>Family Tree Menu</h1>
+  <div class="nav">
+    <ul>
+      <li><a href="/FamilyTree/home">Family Tree Settings</a></li>
+      <li><a href="/FamilyTree/welcome_page">Login Page</a></li>
+    </ul>
+  </div>
   
   <%out.println("<h4>Hello, "+name+"!</h4>");%>
   
