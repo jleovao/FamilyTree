@@ -41,6 +41,7 @@
 <body link="aqua" vlink="#808080" alink="#FF0000">
   <div class="container">
   <h1>Family Tree Menu</h1>
+  <h4 style="text-align:center">Hello, <%=name%>!</h4>
   <div class="nav">
     <ul>
       <li><a href="/FamilyTree/home">Family Tree Settings</a></li>
@@ -48,7 +49,7 @@
     </ul>
   </div>
   
-  <%out.println("<h4>Hello, "+name+"!</h4>");%>
+  
   
   <%-- Import the java.sql package --%>
   <%@ page import="java.sql.*"%>
