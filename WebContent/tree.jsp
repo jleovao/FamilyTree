@@ -62,6 +62,8 @@
   Connection conn = null;
   PreparedStatement pstmt = null;
   ResultSet rs = null;
+  ResultSet rs_mother = null;
+  ResultSet rs_father = null;
   try 
   {
   // Registering Postgresql JDBC driver with the DriverManager
@@ -80,7 +82,7 @@
   if (action != null && action.equals("insert")) {
     // Begin transaction
     conn.setAutoCommit(false);
-    pstmt = conn.prepareStatement("INSERT INTO PERSON(first_name,middle_name,last_name,gender,date_of_birth,alive) VALUES(?,?,?,?,?,?)");
+    pstmt = conn.prepareStatement("INSERT INTO PERSON(first_name,middle_name,last_name,gender,date_of_birth,alive,mother_id,father_id) VALUES(?,?,?,?,?,?,?,?)");
     pstmt.setString(1, request.getParameter("tree_name"));
     pstmt.setString(2, request.getParameter("creator"));
     
@@ -94,7 +96,7 @@
   
   <%-- -------- UPDATE Code -------- --%>
         <%
-        // Check if an update is requested
+        // Check if an xsupdate is requested
         if (action != null && action.equals("update")) {
         // Begin transaction
         conn.setAutoCommit(false);
@@ -123,7 +125,22 @@
         conn.setAutoCommit(true);
         }
         %>
-  
+        
+        <%-- -------- ResultSets -------- --%>
+  		<%
+  		Statement mother_stmnt = conn.createStatement();
+  		String motherSQL = "select p.person_id,p.first_name,p.middle_name,p.last_name " +
+  		"from Person p,trees t where (gender = 'Female' or gender = 'Other') " +
+  		"and t.creator = '" + name + "' and t.tree_id = p.tree_id";
+  		rs_mother = mother_stmnt.executeQuery(motherSQL);
+  		
+  		Statement father_stmnt = conn.createStatement();
+  		String fatherSQL = "select p.person_id,p.first_name,p.middle_name,p.last_name " +
+  		  		"from Person p,trees t where (gender = 'Male' or gender = 'Other') " +
+  		  		"and t.creator = '" + name + "' and t.tree_id = p.tree_id";
+  		rs_father= father_stmnt.executeQuery(fatherSQL);
+  		%>
+  		
   <div class="displayTable">
   <table border="1">
     <tr>
@@ -151,9 +168,38 @@
          %>
         
         <!-- Mother Dropdown Menu -->
-        <th><input value="" name="mother_id"/></th>
+        <th>
+        <select name="mother_id">
+        <option value=""></option>
+        <%
+        while(rs_mother.next()) {
+        String fn = rs_mother.getString("first_name");
+        String mn = rs_mother.getString("middle_name");
+        String ln = rs_mother.getString("last_name");
+        %>
+        	<option value=<%=rs_mother.getInt("person_id")%>><%=fn%> <%=mn%> <%=ln%></option>
+        <%
+  		}// end while	
+        %>
+        </select>
+        </th>
         <!-- Father Dropdown Menu -->
-        <th><input value="" name="father_id"/></th>
+        <th>
+        <select name="father_id">
+        <option value=""></option>
+        <%
+        while(rs_father.next()) {
+        String fn = rs_father.getString("first_name");
+        String mn = rs_father.getString("middle_name");
+        String ln = rs_father.getString("last_name");
+        %>
+        	<option value=<%=rs_father.getInt("person_id")%>><%=fn%> <%=mn%> <%=ln%></option>
+        <%
+  		}// end while	
+        %>
+        </select>
+        </th>
+        
 	    <th colspan="2"><input type="submit" value="Insert"/></th>
       </form>
     </tr>
@@ -220,6 +266,8 @@
   <%
   // Close the ResultSets
   rs.close();
+  rs_mother.close();
+  rs_father.close();
   //Close the Connection
   conn.close();
   } catch (SQLException e) {
@@ -232,6 +280,18 @@
       } catch (SQLException e) { } // Ignore
       rs = null;
     } 
+    if (rs_mother != null) {
+        try {
+        	rs_mother.close();
+        } catch (SQLException e) { } // Ignore
+        rs_mother = null;
+    }
+    if (rs_father != null) {
+        try {
+        	rs_father.close();
+        } catch (SQLException e) { } // Ignore
+        rs_father = null;
+    }
     if (pstmt != null) {
       try {
         pstmt.close();
