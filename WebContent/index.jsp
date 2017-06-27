@@ -32,6 +32,7 @@
   		color: white;
     }
     div.nav {
+    	text-align: left;
     	float: left;
     	color: white;
     }
@@ -46,6 +47,7 @@
     <ul>
       <li><a href="/FamilyTree/home">Family Tree Settings</a></li>
       <li><a href="/FamilyTree/welcome_page">Login Page</a></li>
+      <li><a href="/FamilyTree/tree">View Tree</a></li>
     </ul>
   </div>
   
