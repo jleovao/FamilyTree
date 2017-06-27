@@ -1,5 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+  <%-- Import the java.sql package --%>
+  <%@ page import="java.sql.*"%>
+  <%@ page import="java.io.*,java.util.*" %>
+  <%@ page import="javax.servlet.*,java.text.*" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
   <%
@@ -50,20 +54,14 @@
       <li><a href="/FamilyTree/tree">View Tree</a></li>
     </ul>
   </div>
-  
-  
-  
-  <%-- Import the java.sql package --%>
-  <%@ page import="java.sql.*"%>
-  <%@ page import="java.util.*"%>
   <%-- -------- Open Connection Code -------- --%>
-  <%
-            
+  <%         
   Connection conn = null;
   PreparedStatement pstmt = null;
   ResultSet rs = null;
   ResultSet rs_mother = null;
   ResultSet rs_father = null;
+  ResultSet rs_id = null;
   try 
   {
   // Registering Postgresql JDBC driver with the DriverManager
@@ -72,6 +70,16 @@
   conn = DriverManager.getConnection(
       "jdbc:postgresql://localhost/FamilyTree?" +
       "user=postgres&password=7124804");
+  
+  
+  Statement id_stmnt = conn.createStatement();
+  String idSQL = "select t.tree_id from trees t where t.creator = '" + name + "'";
+  rs_id= id_stmnt.executeQuery(idSQL);
+  // Object references can be null, not primitives. Zero for now.
+  int tree_id = 0;
+  while(rs_id.next()){
+	  tree_id = rs_id.getInt("tree_id");
+  }
   %>
   
   <%-- -------- INSERT Code -------- --%>
@@ -82,10 +90,20 @@
   if (action != null && action.equals("insert")) {
     // Begin transaction
     conn.setAutoCommit(false);
-    pstmt = conn.prepareStatement("INSERT INTO PERSON(first_name,middle_name,last_name,gender,date_of_birth,alive,mother_id,father_id) VALUES(?,?,?,?,?,?,?,?)");
-    pstmt.setString(1, request.getParameter("tree_name"));
-    pstmt.setString(2, request.getParameter("creator"));
-    
+    pstmt = conn.prepareStatement("INSERT INTO PERSON(first_name,middle_name,last_name,gender,date_of_birth,alive,mother_id,father_id,tree_id) VALUES(?,?,?,?,?,?,?,?,?)");
+    pstmt.setString(1, request.getParameter("first_name"));
+    pstmt.setString(2, request.getParameter("middle_name"));
+    pstmt.setString(3, request.getParameter("last_name"));
+    pstmt.setString(4, request.getParameter("gender"));
+    // Convert date_of_birth parameter
+    String currDate = request.getParameter("date_of_birth");
+    java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH).parse(currDate);
+    java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+    pstmt.setDate(5,sqlDate);
+    pstmt.setString(6, request.getParameter("alive"));
+    pstmt.setInt(7, Integer.parseInt(request.getParameter("mother_id")));
+    pstmt.setInt(8, Integer.parseInt(request.getParameter("father_id")));
+    pstmt.setInt(9, tree_id);
     int rowCount = pstmt.executeUpdate();
     
     // Commit transaction
@@ -140,26 +158,26 @@
   		  		"and t.creator = '" + name + "' and t.tree_id = p.tree_id";
   		rs_father= father_stmnt.executeQuery(fatherSQL);
   		%>
-  		
-  <div class="displayTable">
-  <table border="1">
-    <tr>
-      <th>First Name</th>
-      <th>Middle Name</th>
-      <th>Last Name</th>
-      <th>Gender</th>
-      <th>Date of Birth</th>
-      <th>Still Alive?</th>
-      <th>Mother</th>
-      <th>Father</th>
-      <th colspan="2">Action</th>
-    </tr>
-    <tr>
+  
+  <div class="insertTable">
+    <table border="1">
+      <tr>
+        <th>First Name</th>
+        <th>Middle Name</th>
+        <th>Last Name</th>
+        <th>Gender</th>
+        <th>Date of Birth</th>
+        <th>Still Alive?</th>
+        <th>Mother</th>
+        <th>Father</th>
+        <th colspan="2">Action</th>
+      </tr>
+      <tr>
       <form action="./tree.jsp" method="POST">
         <input type="hidden" name="action" value="insert"/>
         <th><input value="" name="first_name"/></th>
         <th><input value="" name="middle_name"/></th>
-        <th><input value="" name="first_name"/></th>
+        <th><input value="" name="last_name"/></th>
         <th><input value="" name="gender"/></th>
         <th><input value="" name="date_of_birth"/></th>
         <th><input value="" name="alive"/></th>
@@ -199,19 +217,43 @@
         %>
         </select>
         </th>
-        
 	    <th colspan="2"><input type="submit" value="Insert"/></th>
       </form>
     </tr>
+    </table>
+  </div>
+  
+  <p> </p>		
+  <div class="displayTable">
+  <table border="1">
+    <tr>
+      <th>First Name</th>
+      <th>Middle Name</th>
+      <th>Last Name</th>
+      <th>Gender</th>
+      <th>Date of Birth</th>
+      <th>Still Alive?</th>
+      <th>Mother</th>
+      <th>Father</th>
+      <th colspan="2">Action</th>
+    </tr>
     <%
     Statement creator_stmnt = conn.createStatement();
-    String selectSQL = "select p.person_id,p.first_name,p.middle_name,p.last_name,p.gender,p.date_of_birth,p.alive," +
+    String selectSQL = "(select p.person_id,p.first_name,p.middle_name,p.last_name,p.gender,p.date_of_birth,p.alive," +
     "p2.first_name as m_first,p2.middle_name as m_middle,p2.last_name as m_last," +
     "p3.first_name as f_first,p3.middle_name as f_middle,p3.last_name as f_last " +
 	"from trees t, person p, person p2, person p3 " +
 	"where t.tree_id = p.tree_id " +
 	"and p.mother_id = p2.person_id and p.father_id = p3.person_id " +
-	"and t.creator = '" + name + "'";
+	"and t.creator = '" + name + "') " +
+	"union " +
+	"(select x.person_id,x.first_name,x.middle_name,x.last_name,x.gender,x.date_of_birth,x.alive," +
+	"null as m_first,null as m_middle,null as m_last, " +
+	"null as f_first,null as f_middle,null as f_last " +
+	"from trees t, person x " +
+	"where t.tree_id = x.tree_id " +
+	"and x.mother_id is null and x.father_id is null " +
+	"and t.creator = '" + name + "')";
     rs = creator_stmnt.executeQuery(selectSQL);
     
     while(rs.next()) {
