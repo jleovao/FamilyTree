@@ -40,6 +40,14 @@
     	float: left;
     	color: white;
     }
+    div.insertTable {
+    	clear: both;
+    	color: white;
+    }
+    div.insertTableNoParent {
+    	clear: both;
+    	color: white;
+    }
   </style>
   <title>Home</title>
 </head>
@@ -110,18 +118,54 @@
     conn.commit();
     conn.setAutoCommit(true);
   }
+  
+  // Check if an insertion without parents is requested
+  if (action != null && action.equals("insertWithoutParents")) {
+    // Begin transaction
+    conn.setAutoCommit(false);
+    pstmt = conn.prepareStatement("INSERT INTO PERSON(first_name,middle_name,last_name,gender,date_of_birth,alive,tree_id) VALUES(?,?,?,?,?,?,?)");
+    pstmt.setString(1, request.getParameter("first_name"));
+    pstmt.setString(2, request.getParameter("middle_name"));
+    pstmt.setString(3, request.getParameter("last_name"));
+    pstmt.setString(4, request.getParameter("gender"));
+    // Convert date_of_birth parameter
+    String currDate = request.getParameter("date_of_birth");
+    java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH).parse(currDate);
+    java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+    pstmt.setDate(5,sqlDate);
+    pstmt.setString(6, request.getParameter("alive"));
+    pstmt.setInt(7, tree_id);
+    int rowCount = pstmt.executeUpdate();
+    
+    // Commit transaction
+    conn.commit();
+    conn.setAutoCommit(true);
+  }
   %>
   
   <%-- -------- UPDATE Code -------- --%>
         <%
-        // Check if an xsupdate is requested
+        // Check if an update is requested
         if (action != null && action.equals("update")) {
         // Begin transaction
         conn.setAutoCommit(false);
-        pstmt = conn.prepareStatement("UPDATE trees SET tree_name = ?, creator = ? WHERE tree_id = ?");
-        pstmt.setString(1, request.getParameter("tree_name"));
-        pstmt.setString(2, request.getParameter("creator"));
-        pstmt.setInt(3, Integer.parseInt(request.getParameter("tree_id")));
+        pstmt = conn.prepareStatement("UPDATE PERSON SET first_name = ?, middle_name = ?, last_name = ?," + 
+        							  " gender = ?, date_of_birth = ?, alive = ?, mother_id = ?, " +
+        							  "father_id = ?,tree_id = ? where person_id = ?");
+        pstmt.setString(1, request.getParameter("first_name"));
+        pstmt.setString(2, request.getParameter("middle_name"));
+        pstmt.setString(3, request.getParameter("last_name"));
+        pstmt.setString(4, request.getParameter("gender"));
+        // Convert date_of_birth parameter
+        String currDate = request.getParameter("date_of_birth");
+        java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH).parse(currDate);
+        java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+        pstmt.setDate(5,sqlDate);
+        pstmt.setString(6, request.getParameter("alive"));
+        pstmt.setInt(7, Integer.parseInt(request.getParameter("mother_id")));
+        pstmt.setInt(8, Integer.parseInt(request.getParameter("father_id")));
+        pstmt.setInt(9, tree_id);
+        pstmt.setInt(10, Integer.parseInt(request.getParameter("person_id")));
         int rowCount = pstmt.executeUpdate();
         // Commit transaction
         conn.commit();
@@ -160,6 +204,7 @@
   		%>
   
   <div class="insertTable">
+  <b>Insert Person With Existing Parent</b>
     <table border="1">
       <tr>
         <th>First Name</th>
@@ -184,34 +229,55 @@
         <% // Parent Dropdown Menu will be in format first_name,middle_name,last_name 
            // and will pass in the corresponding parent_id upon insert
          %>
-        
-        <!-- Mother Dropdown Menu -->
+        <!-- Mother Drop down Menu -->
         <th>
         <select name="mother_id">
         <option value=""></option>
         <%
+        // Lists to hold mother's id, first_name, middle_name, and last_name
+        List<Integer> mid = new ArrayList<Integer>();
+        List<String> mfn = new ArrayList<String>();
+        List<String> mmn = new ArrayList<String>();
+        List<String> mln = new ArrayList<String>();
+        
         while(rs_mother.next()) {
+        int mother_id = rs_mother.getInt("person_id");
         String fn = rs_mother.getString("first_name");
         String mn = rs_mother.getString("middle_name");
         String ln = rs_mother.getString("last_name");
+        mid.add(mother_id);
+        mfn.add(fn);
+        mmn.add(mn);
+        mln.add(ln);
         %>
-        	<option value=<%=rs_mother.getInt("person_id")%>><%=fn%> <%=mn%> <%=ln%></option>
+        	<option value=<%=mother_id%>><%=fn%> <%=mn%> <%=ln%></option>
         <%
   		}// end while	
         %>
         </select>
         </th>
-        <!-- Father Dropdown Menu -->
+        <!-- Father Drop down Menu -->
         <th>
         <select name="father_id">
         <option value=""></option>
         <%
+     // Lists to hold father's id, first_name, middle_name, and last_name
+        List<Integer> fid = new ArrayList<Integer>();
+        List<String> ffn = new ArrayList<String>();
+        List<String> fmn = new ArrayList<String>();
+        List<String> fln = new ArrayList<String>();
+        
         while(rs_father.next()) {
+        int father_id = rs_father.getInt("person_id");
         String fn = rs_father.getString("first_name");
         String mn = rs_father.getString("middle_name");
         String ln = rs_father.getString("last_name");
+        fid.add(father_id);
+        ffn.add(fn);
+        fmn.add(mn);
+        fln.add(ln);
         %>
-        	<option value=<%=rs_father.getInt("person_id")%>><%=fn%> <%=mn%> <%=ln%></option>
+        	<option value=<%=father_id%>><%=fn%> <%=mn%> <%=ln%></option>
         <%
   		}// end while	
         %>
@@ -222,9 +288,38 @@
     </tr>
     </table>
   </div>
+  <p> </p>
   
-  <p> </p>		
+  <div class="insertTableNoParent">
+  <b>Insert Person Without Existing Parent</b>
+    <table border="1">
+      <tr>
+        <th>First Name</th>
+        <th>Middle Name</th>
+        <th>Last Name</th>
+        <th>Gender</th>
+        <th>Date of Birth</th>
+        <th>Still Alive?</th>
+        <th colspan="2">Action</th>
+      </tr>
+      <tr>
+      <form action="./tree.jsp" method="POST">
+        <input type="hidden" name="action" value="insertWithoutParents"/>
+        <th><input value="" name="first_name"/></th>
+        <th><input value="" name="middle_name"/></th>
+        <th><input value="" name="last_name"/></th>
+        <th><input value="" name="gender"/></th>
+        <th><input value="" name="date_of_birth"/></th>
+        <th><input value="" name="alive"/></th>
+	    <th colspan="2"><input type="submit" value="Insert"/></th>
+      </form>
+    </tr>
+    </table>
+  </div>
+  <p> </p>
+ 		
   <div class="displayTable">
+  <b>List of People in Family Tree</b>
   <table border="1">
     <tr>
       <th>First Name</th>
@@ -240,16 +335,16 @@
     <%
     Statement creator_stmnt = conn.createStatement();
     String selectSQL = "(select p.person_id,p.first_name,p.middle_name,p.last_name,p.gender,p.date_of_birth,p.alive," +
-    "p2.first_name as m_first,p2.middle_name as m_middle,p2.last_name as m_last," +
-    "p3.first_name as f_first,p3.middle_name as f_middle,p3.last_name as f_last " +
+    "p2.person_id as m_id,p2.first_name as m_first,p2.middle_name as m_middle,p2.last_name as m_last," +
+    "p3.person_id as f_id,p3.first_name as f_first,p3.middle_name as f_middle,p3.last_name as f_last " +
 	"from trees t, person p, person p2, person p3 " +
 	"where t.tree_id = p.tree_id " +
 	"and p.mother_id = p2.person_id and p.father_id = p3.person_id " +
 	"and t.creator = '" + name + "') " +
 	"union " +
 	"(select x.person_id,x.first_name,x.middle_name,x.last_name,x.gender,x.date_of_birth,x.alive," +
-	"null as m_first,null as m_middle,null as m_last, " +
-	"null as f_first,null as f_middle,null as f_last " +
+	"null as m_id,null as m_first,null as m_middle,null as m_last, " +
+	"null as f_id,null as f_first,null as f_middle,null as f_last " +
 	"from trees t, person x " +
 	"where t.tree_id = x.tree_id " +
 	"and x.mother_id is null and x.father_id is null " +
@@ -281,10 +376,36 @@
         <input value="<%=rs.getString("alive")%>" name="alive"/>
       </td>
       <td>
-        <%=rs.getString("m_first")%> <%=rs.getString("m_last")%>
+		<select name="mother_id">
+			<option value=<%=rs.getInt("m_id")%>><%=rs.getString("m_first")%> <%=rs.getString("m_last")%> 
+			<%
+			int m_temp = 0;
+			for(int current: mid) {
+			  if(current != rs.getInt("m_id")) {
+				%>
+				<option value="<%=current%>"><%=mfn.get(m_temp)%> <%=mln.get(m_temp)%></option>
+				<%
+				m_temp++;
+			  }// end if
+			}// end for
+			%>
+		</select>	
       </td>
       <td>
-        <%=rs.getString("f_first")%> <%=rs.getString("f_last")%>
+      <select name="father_id">
+			<option value=<%=rs.getInt("f_id")%>><%=rs.getString("f_first")%> <%=rs.getString("f_last")%> 
+			<%
+			int f_temp = 0;
+			for(int current: fid) {
+			  if(current != rs.getInt("f_id")) {
+				%>
+				<option value="<%=current%>"><%=ffn.get(f_temp)%> <%=fln.get(f_temp)%></option>
+				<%
+				f_temp++;
+			  }// end if
+			}// end for
+			%>
+		</select>
       </td>
       
       <%--Update Button --%>
@@ -310,6 +431,7 @@
   rs.close();
   rs_mother.close();
   rs_father.close();
+  rs_id.close();
   //Close the Connection
   conn.close();
   } catch (SQLException e) {
@@ -333,6 +455,12 @@
         	rs_father.close();
         } catch (SQLException e) { } // Ignore
         rs_father = null;
+    }
+    if (rs_id != null) {
+        try {
+        	rs_id.close();
+        } catch (SQLException e) { } // Ignore
+        rs_id = null;
     }
     if (pstmt != null) {
       try {
