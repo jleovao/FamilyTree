@@ -125,6 +125,7 @@
         %>
   
   <div class="displayTable">
+    <p align="left">For simplicity purposes, only one tree per user.</p>
   <table border="1">
     <tr>
       <th>Tree Name</th>

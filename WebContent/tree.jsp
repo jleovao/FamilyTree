@@ -105,9 +105,14 @@
     pstmt.setString(4, request.getParameter("gender"));
     // Convert date_of_birth parameter
     String currDate = request.getParameter("date_of_birth");
-    java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH).parse(currDate);
-    java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
-    pstmt.setDate(5,sqlDate);
+    if(currDate == null || currDate.equals("")) {
+    	pstmt.setDate(5,null);
+    }
+    else {
+      java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH).parse(currDate);
+      java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+      pstmt.setDate(5,sqlDate);
+    }
     pstmt.setString(6, request.getParameter("alive"));
     pstmt.setInt(7, Integer.parseInt(request.getParameter("mother_id")));
     pstmt.setInt(8, Integer.parseInt(request.getParameter("father_id")));
@@ -130,9 +135,14 @@
     pstmt.setString(4, request.getParameter("gender"));
     // Convert date_of_birth parameter
     String currDate = request.getParameter("date_of_birth");
-    java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH).parse(currDate);
-    java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
-    pstmt.setDate(5,sqlDate);
+    if(currDate == null || currDate.equals("")) {
+    	pstmt.setDate(5,null);
+    }
+    else {
+      java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH).parse(currDate);
+      java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+      pstmt.setDate(5,sqlDate);
+    }
     pstmt.setString(6, request.getParameter("alive"));
     pstmt.setInt(7, tree_id);
     int rowCount = pstmt.executeUpdate();
@@ -204,7 +214,7 @@
   		%>
   
   <div class="insertTable">
-  <b>Insert Person With Existing Parent</b>
+  <b align="left">Insert Person With Existing Parent</b>
     <table border="1">
       <tr>
         <th>First Name</th>
@@ -232,7 +242,13 @@
           </select>
         </th>
         <th><input type="date" value="" name="date_of_birth"/></th>
-        <th><input value="" name="alive"/></th>
+        <th>
+		  <select name="alive">
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+		</th>
+        
         <% // Parent Dropdown Menu will be in format first_name,middle_name,last_name 
            // and will pass in the corresponding parent_id upon insert
          %>
@@ -298,7 +314,7 @@
   <p> </p>
   
   <div class="insertTableNoParent">
-  <b>Insert Person Without Existing Parent</b>
+  <b align="left">Insert Person Without Existing Parent</b>
     <table border="1">
       <tr>
         <th>First Name</th>
@@ -324,7 +340,12 @@
           </select>
         </th>
         <th><input type="date" value="" name="date_of_birth"/></th>
-        <th><input value="" name="alive"/></th>
+        <th>
+		  <select name="alive">
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+		</th>
 	    <th colspan="2"><input type="submit" value="Insert"/></th>
       </form>
     </tr>
@@ -333,7 +354,7 @@
   <p> </p>
  		
   <div class="displayTable">
-  <b>List of People in Family Tree</b>
+  <b align="left">List of People in Family Tree</b>
   <table border="1">
     <tr>
       <th>First Name</th>
