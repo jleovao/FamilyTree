@@ -128,25 +128,10 @@
     pstmt.setString(2, request.getParameter("middle_name"));
     pstmt.setString(3, request.getParameter("last_name"));
     pstmt.setString(4, request.getParameter("gender"));
-    
-    //DateFormat originalFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
-    //DateFormat targetFormat = new SimpleDateFormat("yyyy-MM-dd");
-    //Date date = originalFormat.parse("August 21, 2012");
-    //String formattedDate = targetFormat.format(date);  // 20120821
-    
-    String currDate = request.getParameter("date_of_birth");
-    DateFormat originalFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
-    DateFormat targetFormat = new SimpleDateFormat("yyyy-MM-dd");
-    java.util.Date utilDate = originalFormat.parse(currDate);
-    String formattedDate = targetFormat.format(utilDate);
-    
-    java.util.Date dateFormatted = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH).parse(formattedDate);
-    java.sql.Date sqlDate = new java.sql.Date(dateFormatted.getTime());
-    
     // Convert date_of_birth parameter
-    //String currDate = request.getParameter("date_of_birth");
-    //java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH).parse(currDate);
-    //java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+    String currDate = request.getParameter("date_of_birth");
+    java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH).parse(currDate);
+    java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
     pstmt.setDate(5,sqlDate);
     pstmt.setString(6, request.getParameter("alive"));
     pstmt.setInt(7, tree_id);
