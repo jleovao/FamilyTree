@@ -53,13 +53,13 @@
 </head>
 <body link="aqua" vlink="#808080" alink="#FF0000">
   <div class="container">
-  <h1>Family Tree Menu</h1>
+  <h1>Edit Family Tree</h1>
   <h4 style="text-align:center">Hello, <%=name%>!</h4>
   <div class="nav">
     <ul>
       <li><a href="/FamilyTree/home">Family Tree Settings</a></li>
       <li><a href="/FamilyTree/welcome_page">Login Page</a></li>
-      <li><a href="/FamilyTree/tree">View Tree</a></li>
+      <li><a href="/FamilyTree/tree">Edit Tree</a></li>
     </ul>
   </div>
   <%-- -------- Open Connection Code -------- --%>
@@ -128,10 +128,25 @@
     pstmt.setString(2, request.getParameter("middle_name"));
     pstmt.setString(3, request.getParameter("last_name"));
     pstmt.setString(4, request.getParameter("gender"));
-    // Convert date_of_birth parameter
+    
+    //DateFormat originalFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
+    //DateFormat targetFormat = new SimpleDateFormat("yyyy-MM-dd");
+    //Date date = originalFormat.parse("August 21, 2012");
+    //String formattedDate = targetFormat.format(date);  // 20120821
+    
     String currDate = request.getParameter("date_of_birth");
-    java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH).parse(currDate);
-    java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+    DateFormat originalFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
+    DateFormat targetFormat = new SimpleDateFormat("yyyy-MM-dd");
+    java.util.Date utilDate = originalFormat.parse(currDate);
+    String formattedDate = targetFormat.format(utilDate);
+    
+    java.util.Date dateFormatted = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH).parse(formattedDate);
+    java.sql.Date sqlDate = new java.sql.Date(dateFormatted.getTime());
+    
+    // Convert date_of_birth parameter
+    //String currDate = request.getParameter("date_of_birth");
+    //java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH).parse(currDate);
+    //java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
     pstmt.setDate(5,sqlDate);
     pstmt.setString(6, request.getParameter("alive"));
     pstmt.setInt(7, tree_id);
@@ -223,8 +238,15 @@
         <th><input value="" name="first_name"/></th>
         <th><input value="" name="middle_name"/></th>
         <th><input value="" name="last_name"/></th>
-        <th><input value="" name="gender"/></th>
-        <th><input value="" name="date_of_birth"/></th>
+        <th>
+          <select name="gender">
+            <option value=""></option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </th>
+        <th><input type="date" value="" name="date_of_birth"/></th>
         <th><input value="" name="alive"/></th>
         <% // Parent Dropdown Menu will be in format first_name,middle_name,last_name 
            // and will pass in the corresponding parent_id upon insert
@@ -308,8 +330,15 @@
         <th><input value="" name="first_name"/></th>
         <th><input value="" name="middle_name"/></th>
         <th><input value="" name="last_name"/></th>
-        <th><input value="" name="gender"/></th>
-        <th><input value="" name="date_of_birth"/></th>
+        <th>
+          <select name="gender">
+            <option value=""></option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </th>
+        <th><input type="date" value="" name="date_of_birth"/></th>
         <th><input value="" name="alive"/></th>
 	    <th colspan="2"><input type="submit" value="Insert"/></th>
       </form>
