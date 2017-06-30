@@ -408,7 +408,20 @@
         <input value="<%=rs.getDate("date_of_birth")%>" name="date_of_birth"/>
       </td>
       <td>
-        <input value="<%=rs.getString("alive")%>" name="alive"/>
+      	<select name="alive">
+      		<option value="<%=rs.getString("alive")%>"><%=rs.getString("alive")%></option>
+      		<%
+      		if(rs.getString("alive").equals("Yes")) {
+      		%>
+      		<option value="No">No</option>
+      		<%
+      		} else {
+      		%>
+      		<option value="Yes">Yes</option>
+      		<%
+      		}
+      		%>
+      	</select>
       </td>
       <td>
 		<select name="mother_id">
