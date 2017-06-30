@@ -45,9 +45,10 @@
   <h4 style="text-align:center">Hello, <%=name%>!</h4>
   <div class="nav">
     <ul>
-      <li><a href="/FamilyTree/home">Family Tree Settings</a></li>
       <li><a href="/FamilyTree/welcome_page">Login Page</a></li>
+      <li><a href="/FamilyTree/home">Create/Edit Tree Name</a></li>
       <li><a href="/FamilyTree/tree">Edit Tree</a></li>
+      <li><a href="/FamilyTree/knowYourFamily">Get to know yo fam</a></li>
     </ul>
   </div>
   
