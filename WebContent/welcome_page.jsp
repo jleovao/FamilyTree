@@ -38,7 +38,9 @@
       <input type="submit" value="Login">
       <a href="/FamilyTree/signup" style="color:#00FF00">New User?</a>
     </form>
-     </div>   
+    </div> 
+    
+    <a href="https://www.youtube.com/watch?v=lWKd5xquliU" style="color:aqua">McDonald's Menu</a>  
     <%
     String action = request.getParameter("action");
     String username=null;
