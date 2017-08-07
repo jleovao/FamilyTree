@@ -4,6 +4,17 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<style>
+   	body{
+   		text-align: center;
+   		background: url("./images/background_textured_blue.jpg");
+   		background-size: cover;
+   		background-position: center center;
+   		background-repeat: no-repeat;
+   		background-attachment: fixed;
+   		color: white;
+    }
+</style>
 <title>Redirect Login</title>
 </head>
 <body>

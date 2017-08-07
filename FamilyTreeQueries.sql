@@ -100,9 +100,11 @@ where p1.mother_id = p2.mother_id and
       and p1 <> p2;
 
 /* Get Kids */
-select p1.first_name, p1.last_name from Person p1, Person p2, Person p3
-where p2.first_name = 'Bobbie' and p2.last_name = 'Leovao' and
-      p1.mother_id = p2.person_id;
+select p1.first_name, p1.last_name from Person p1, Person p2, trees t
+where p2.first_name = 'Eddard' and p2.last_name = 'Stark' and
+	  p1.tree_id = p2.tree_id and
+      (p2.person_id = p1.mother_id or p2.person_id = p1.father_id) and
+      p1.tree_id = t.tree_id and t.creator = 'LordSnow';
 
 /* Display person table info */
 select p.first_name,p.middle_name,p.last_name,p.gender,p.date_of_birth,p.alive,

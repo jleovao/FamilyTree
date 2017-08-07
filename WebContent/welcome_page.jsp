@@ -40,7 +40,12 @@
     </form>
     </div> 
     
-    <a href="https://www.youtube.com/watch?v=lWKd5xquliU" style="color:aqua">McDonald's Menu</a>  
+    <a href="https://www.youtube.com/watch?v=lWKd5xquliU" style="color:aqua">McDonald's Menu</a> <br>
+    <video width="320" height="240" controls>
+      
+      <source src="./images/dbs_97.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video> 
     <%
     String action = request.getParameter("action");
     String username=null;

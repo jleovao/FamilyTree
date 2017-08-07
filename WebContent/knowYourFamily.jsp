@@ -58,6 +58,7 @@
   ResultSet rs_mother = null;
   ResultSet rs_father = null;
   ResultSet rs_sibling = null;
+  ResultSet rs_kids = null;
   try 
   {
   // Registering Postgresql JDBC driver with the DriverManager
@@ -87,10 +88,13 @@
         <li><a href="/FamilyTree/knowYourFamily">Get to know yo fam</a></li>
       </ul>
     </div>
-    <div class="selectPerson">
+    <div class="selectPerson" align="left">
     <%
     Statement stmnt = conn.createStatement();
-	rs = stmnt.executeQuery("select * from person");
+	rs = stmnt.executeQuery("select * from person p,trees t " +
+			"where p.tree_id = t.tree_id and " +
+			" t.tree_id = " + tree_id + 
+			" and t.creator = '" + name + "'");
     %>
     <table border="1">
         <tr>
@@ -160,6 +164,14 @@
     		  "and p1 <> p2;";
  	 Statement s_stmnt = conn.createStatement();
  	 rs_sibling = s_stmnt.executeQuery(sibSQL);
+ 	 
+ 	String kidSQL = "select p1.* from Person p1, Person p2, trees t " +
+ 			"where p2.person_id = " + request.getParameter("person_id") +
+ 			" and p1.tree_id = p2.tree_id and " +
+ 			" (p2.person_id = p1.mother_id or p2.person_id = p1.father_id) and " +
+ 		    "p1.tree_id = t.tree_id and t.creator = '" + name +"'";
+	 Statement k_stmnt = conn.createStatement();
+	 rs_kids = k_stmnt.executeQuery(kidSQL);
       
       // Commit transaction
       conn.commit();
@@ -249,6 +261,7 @@
         %>
       </table>
       
+      <br>
       <!-- Display sibling data of person selected -->
       <b>Person's Siblings</b>
       <table border="1">
@@ -275,6 +288,35 @@
         } // end rs_sibling
         %>
       </table>
+      
+      <br>
+      <!-- Display children data of person selected -->
+      <b>Person's Children</b>
+      <table border="1">
+        <tr>
+          <th>First Name</th>
+          <th>Middle Name</th>
+          <th>Last Name</th>
+          <th>Gender</th>
+          <th>Date of Birth</th>
+          <th>Still Alive?</th>
+        </tr>
+        <%
+        while(rs_kids.next()) {
+        %>
+        <tr>
+          <td><%=rs_kids.getString("first_name") %></td>
+          <td><%=rs_kids.getString("middle_name") %></td>
+          <td><%=rs_kids.getString("last_name") %></td>
+          <td><%=rs_kids.getString("gender") %></td>
+          <td><%=rs_kids.getDate("date_of_birth") %></td>
+          <td><%=rs_kids.getString("alive") %></td>
+        </tr>
+        <%
+        } // end rs_kids
+        %>
+      </table>
+      
       </div>
     
     <%
@@ -329,6 +371,12 @@
         	rs_sibling.close();
         } catch (SQLException e) { } // Ignore
         rs_sibling = null;
+    }
+    if (rs_kids != null) {
+        try {
+        	rs_kids.close();
+        } catch (SQLException e) { } // Ignore
+        rs_kids = null;
     }
     if (pstmt != null) {
       try {

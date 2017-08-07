@@ -160,24 +160,48 @@
         if (action != null && action.equals("update")) {
         // Begin transaction
         conn.setAutoCommit(false);
-        pstmt = conn.prepareStatement("UPDATE PERSON SET first_name = ?, middle_name = ?, last_name = ?," + 
-        							  " gender = ?, date_of_birth = ?, alive = ?, mother_id = ?, " +
-        							  "father_id = ?,tree_id = ? where person_id = ?");
+        // Case when parent_ids are null
+        if(Integer.parseInt(request.getParameter("mother_id")) == 0) {
+       	pstmt = conn.prepareStatement("UPDATE PERSON SET first_name = ?, middle_name = ?, last_name = ?," + 
+				  " gender = ?, date_of_birth = ?, alive = ?, " +
+				  "tree_id = ? where person_id = ?");
+       	pstmt.setInt(7, tree_id);
+       	pstmt.setInt(8, Integer.parseInt(request.getParameter("person_id")));
+       	
+        }
+        // Case when parent_ids are not null
+        else{
+       	pstmt = conn.prepareStatement("UPDATE PERSON SET first_name = ?, middle_name = ?, last_name = ?," + 
+				  " gender = ?, date_of_birth = ?, alive = ?, mother_id = ?, " +
+				  "father_id = ?,tree_id = ? where person_id = ?");
+       	
+       	// Parameters are shared whether parent_ids are null or not
+       	pstmt.setInt(7, Integer.parseInt(request.getParameter("mother_id")));
+        pstmt.setInt(8, Integer.parseInt(request.getParameter("father_id")));
+        pstmt.setInt(9, tree_id);
+        pstmt.setInt(10, Integer.parseInt(request.getParameter("person_id")));
+        }
+        
         pstmt.setString(1, request.getParameter("first_name"));
         pstmt.setString(2, request.getParameter("middle_name"));
         pstmt.setString(3, request.getParameter("last_name"));
         pstmt.setString(4, request.getParameter("gender"));
         // Convert date_of_birth parameter
         String currDate = request.getParameter("date_of_birth");
-        java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH).parse(currDate);
-        java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
-        pstmt.setDate(5,sqlDate);
+        if(currDate == null || currDate.equals("") || currDate.equals("null")) {
+        	pstmt.setDate(5,null);
+        }
+        else {
+          java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH).parse(currDate);
+          java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+          pstmt.setDate(5,sqlDate);
+        }
         pstmt.setString(6, request.getParameter("alive"));
-        pstmt.setInt(7, Integer.parseInt(request.getParameter("mother_id")));
-        pstmt.setInt(8, Integer.parseInt(request.getParameter("father_id")));
-        pstmt.setInt(9, tree_id);
-        pstmt.setInt(10, Integer.parseInt(request.getParameter("person_id")));
+        
+        
+        
         int rowCount = pstmt.executeUpdate();
+        
         // Commit transaction
         conn.commit();
         conn.setAutoCommit(true);
