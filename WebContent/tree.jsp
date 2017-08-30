@@ -467,29 +467,29 @@
       	</select>
       </td>
       <td>
-		<select name="mother_id">
-		  <%
-		  // Check if mother is known or not
-		  if(rs.getInt("m_id") != 0) {
-		  %>
-		    <option value=<%=rs.getInt("m_id")%>><%=rs.getString("m_first")%> <%=rs.getString("m_last")%></option>
-		  <%
-		  } else {
-		  %>
-	        <option value=<%=rs.getInt("m_id")%>></option>
-		  <%
-		  } // end else
-		  %>
-		  <%
-		  int m_temp = 0;
-		  for(int current: mid) {
-		    if(current != rs.getInt("m_id")) {
-		    %>
+        <select name="mother_id">
+          <%
+          // Check if mother is known or not
+          if(rs.getInt("m_id") != 0) {
+          %>
+            <option value=<%=rs.getInt("m_id")%>><%=rs.getString("m_first")%> <%=rs.getString("m_last")%></option>
+          <%
+          } else {
+          %>
+            <option value=<%=rs.getInt("m_id")%>></option>
+          <%
+          } // end else
+          %>
+          <%
+          int m_temp = 0;
+          for(int current: mid) {
+            if(current != rs.getInt("m_id")) {
+              %>
               <option value="<%=current%>"><%=mfn.get(m_temp)%> <%=mln.get(m_temp)%></option>
-            <%
+          <%
               m_temp++;
-		    }// end if
-		  }// end for
+            }// end if
+          }// end for
           %>
 		</select>	
       </td>
@@ -497,28 +497,28 @@
       <select name="father_id">
         <%
         // Check if father is known or not
-		if(rs.getInt("f_id") != 0) {
-		%>
-		  <option value=<%=rs.getInt("f_id")%>><%=rs.getString("f_first")%> <%=rs.getString("f_last")%></option>
-		<% 
-		} else {
-		%>
-		  <option value=<%=rs.getInt("f_id")%>></option>
-		<%
-		} // End else
-		%>
-		<%
-		int f_temp = 0;
-		for(int current: fid) {
-		  if(current != rs.getInt("f_id")) {
-			%>
-			<option value="<%=current%>"><%=ffn.get(f_temp)%> <%=fln.get(f_temp)%></option>
-			<%
-			f_temp++;
-		  }// end if
-		}// end for
-		%>
-		</select>
+        if(rs.getInt("f_id") != 0) {
+        %>
+          <option value=<%=rs.getInt("f_id")%>><%=rs.getString("f_first")%> <%=rs.getString("f_last")%></option>
+        <% 
+        } else {
+        %>
+          <option value=<%=rs.getInt("f_id")%>></option>
+        <%
+        } // End else
+        %>
+        <%
+        int f_temp = 0;
+        for(int current: fid) {
+          if(current != rs.getInt("f_id")) {
+          %>
+            <option value="<%=current%>"><%=ffn.get(f_temp)%> <%=fln.get(f_temp)%></option>
+          <%
+            f_temp++;
+          }// end if
+        }// end for
+        %>
+        </select>
       </td>
       
       <%--Update Button --%>
