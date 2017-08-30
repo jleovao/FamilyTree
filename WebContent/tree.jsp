@@ -198,8 +198,6 @@
         }
         pstmt.setString(6, request.getParameter("alive"));
         
-        
-        
         int rowCount = pstmt.executeUpdate();
         
         // Commit transaction
@@ -427,7 +425,27 @@
         <input value="<%=rs.getString("last_name")%>" name="last_name"/>
       </td>
       <td>
-        <input value="<%=rs.getString("gender")%>" name="gender"/>
+        <select name="gender">
+        	<option value="<%=rs.getString("gender")%>"><%=rs.getString("gender")%></option>
+        	<%
+        	if(rs.getString("gender").equals("Male")) {
+        	%>
+        		<option value="Female">Female</option>
+        		<option value="Other">Other</option>
+        	<%
+        	} else if(rs.getString("gender").equals("Female")) {
+        	%>
+        		<option value="Male">Male</option>
+        		<option value="Other">Other</option>
+        	<% 
+        	} else {
+        	%>
+        		<option value="Male">Male</option>
+        		<option value="Female">Female</option>
+        	<%
+        	} // end else
+        	%>
+        </select>
       </td>
       <td>
         <input value="<%=rs.getDate("date_of_birth")%>" name="date_of_birth"/>
@@ -450,7 +468,19 @@
       </td>
       <td>
 		<select name="mother_id">
-			<option value=<%=rs.getInt("m_id")%>><%=rs.getString("m_first")%> <%=rs.getString("m_last")%> 
+			<%
+			// Check if mother is known or not
+			if(rs.getInt("m_id") != 0) {
+			%>
+				<option value=<%=rs.getInt("m_id")%>><%=rs.getString("m_first")%> <%=rs.getString("m_last")%></option>
+			<%
+			} else {
+			%>
+				<option value=<%=rs.getInt("m_id")%>></option>
+			<%
+			} // end else
+			%>
+			
 			<%
 			int m_temp = 0;
 			for(int current: mid) {
@@ -466,7 +496,18 @@
       </td>
       <td>
       <select name="father_id">
-			<option value=<%=rs.getInt("f_id")%>><%=rs.getString("f_first")%> <%=rs.getString("f_last")%> 
+      		<%
+      		// Check if father is known or not
+			if(rs.getInt("f_id") != 0) {
+			%>
+				<option value=<%=rs.getInt("f_id")%>><%=rs.getString("f_first")%> <%=rs.getString("f_last")%></option>
+			<% 
+			} else {
+			%>
+				<option value=<%=rs.getInt("f_id")%>></option>
+			<%
+			} // End else
+			%>
 			<%
 			int f_temp = 0;
 			for(int current: fid) {
