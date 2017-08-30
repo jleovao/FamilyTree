@@ -307,7 +307,7 @@
         <select name="father_id">
         <option value=""></option>
         <%
-     // Lists to hold father's id, first_name, middle_name, and last_name
+        // Lists to hold father's id, first_name, middle_name, and last_name
         List<Integer> fid = new ArrayList<Integer>();
         List<String> ffn = new ArrayList<String>();
         List<String> fmn = new ArrayList<String>();
@@ -426,25 +426,25 @@
       </td>
       <td>
         <select name="gender">
-        	<option value="<%=rs.getString("gender")%>"><%=rs.getString("gender")%></option>
-        	<%
-        	if(rs.getString("gender").equals("Male")) {
-        	%>
-        		<option value="Female">Female</option>
-        		<option value="Other">Other</option>
-        	<%
-        	} else if(rs.getString("gender").equals("Female")) {
-        	%>
-        		<option value="Male">Male</option>
-        		<option value="Other">Other</option>
-        	<% 
-        	} else {
-        	%>
-        		<option value="Male">Male</option>
-        		<option value="Female">Female</option>
-        	<%
-        	} // end else
-        	%>
+          <option value="<%=rs.getString("gender")%>"><%=rs.getString("gender")%></option>
+          <%
+          if(rs.getString("gender").equals("Male")) {
+          %>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          <%
+          } else if(rs.getString("gender").equals("Female")) {
+          %>
+            <option value="Male">Male</option>
+            <option value="Other">Other</option>
+          <% 
+          } else {
+          %>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          <%
+          } // end else
+          %>
         </select>
       </td>
       <td>
@@ -452,73 +452,72 @@
       </td>
       <td>
       	<select name="alive">
-      		<option value="<%=rs.getString("alive")%>"><%=rs.getString("alive")%></option>
-      		<%
-      		if(rs.getString("alive").equals("Yes")) {
-      		%>
-      		<option value="No">No</option>
-      		<%
-      		} else {
-      		%>
-      		<option value="Yes">Yes</option>
-      		<%
-      		}
-      		%>
+      	  <option value="<%=rs.getString("alive")%>"><%=rs.getString("alive")%></option>
+      	  <%
+      	  if(rs.getString("alive").equals("Yes")) {
+      	  %>
+      	  <option value="No">No</option>
+      	  <%
+      	  } else {
+      	  %>
+      	  <option value="Yes">Yes</option>
+      	  <%
+      	  }
+      	  %>
       	</select>
       </td>
       <td>
 		<select name="mother_id">
-			<%
-			// Check if mother is known or not
-			if(rs.getInt("m_id") != 0) {
-			%>
-				<option value=<%=rs.getInt("m_id")%>><%=rs.getString("m_first")%> <%=rs.getString("m_last")%></option>
-			<%
-			} else {
-			%>
-				<option value=<%=rs.getInt("m_id")%>></option>
-			<%
-			} // end else
-			%>
-			
-			<%
-			int m_temp = 0;
-			for(int current: mid) {
-			  if(current != rs.getInt("m_id")) {
-				%>
-				<option value="<%=current%>"><%=mfn.get(m_temp)%> <%=mln.get(m_temp)%></option>
-				<%
-				m_temp++;
-			  }// end if
-			}// end for
-			%>
+		  <%
+		  // Check if mother is known or not
+		  if(rs.getInt("m_id") != 0) {
+		  %>
+		    <option value=<%=rs.getInt("m_id")%>><%=rs.getString("m_first")%> <%=rs.getString("m_last")%></option>
+		  <%
+		  } else {
+		  %>
+	        <option value=<%=rs.getInt("m_id")%>></option>
+		  <%
+		  } // end else
+		  %>
+		  <%
+		  int m_temp = 0;
+		  for(int current: mid) {
+		    if(current != rs.getInt("m_id")) {
+		    %>
+              <option value="<%=current%>"><%=mfn.get(m_temp)%> <%=mln.get(m_temp)%></option>
+            <%
+              m_temp++;
+		    }// end if
+		  }// end for
+          %>
 		</select>	
       </td>
       <td>
       <select name="father_id">
-      		<%
-      		// Check if father is known or not
-			if(rs.getInt("f_id") != 0) {
+        <%
+        // Check if father is known or not
+		if(rs.getInt("f_id") != 0) {
+		%>
+		  <option value=<%=rs.getInt("f_id")%>><%=rs.getString("f_first")%> <%=rs.getString("f_last")%></option>
+		<% 
+		} else {
+		%>
+		  <option value=<%=rs.getInt("f_id")%>></option>
+		<%
+		} // End else
+		%>
+		<%
+		int f_temp = 0;
+		for(int current: fid) {
+		  if(current != rs.getInt("f_id")) {
 			%>
-				<option value=<%=rs.getInt("f_id")%>><%=rs.getString("f_first")%> <%=rs.getString("f_last")%></option>
-			<% 
-			} else {
-			%>
-				<option value=<%=rs.getInt("f_id")%>></option>
+			<option value="<%=current%>"><%=ffn.get(f_temp)%> <%=fln.get(f_temp)%></option>
 			<%
-			} // End else
-			%>
-			<%
-			int f_temp = 0;
-			for(int current: fid) {
-			  if(current != rs.getInt("f_id")) {
-				%>
-				<option value="<%=current%>"><%=ffn.get(f_temp)%> <%=fln.get(f_temp)%></option>
-				<%
-				f_temp++;
-			  }// end if
-			}// end for
-			%>
+			f_temp++;
+		  }// end if
+		}// end for
+		%>
 		</select>
       </td>
       
