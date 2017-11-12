@@ -43,26 +43,26 @@ insert into Trees(tree_name,creator) values ('L7_Enterprise','jleovao');
 /* Insert new person without parent IDs, then updating parent ids */
 /* Skewed Data for privacy */
 insert into Person(first_name,middle_name,last_name,gender,date_of_birth,alive,tree_id) 
-values ('Anna',null,'Siona','Female','1941-09-22','Yes',1);
+values ('fn1',null,'Siona','Female','1941-09-22','Yes',1);
 insert into Person(first_name,middle_name,last_name,gender,date_of_birth,alive,tree_id) 
-values ('Tuvalu',null,'Siona','Male','1931-02-20','No',1);
+values ('fn2',null,'Siona','Male','1931-02-20','No',1);
 insert into Person(first_name,middle_name,last_name,gender,date_of_birth,alive,tree_id) 
-values ('Bobbie','Anna','L','Female','1974-09-06','Yes',1);
+values ('fn3','a','L','Female','1974-09-06','Yes',1);
 insert into Person(first_name,middle_name,last_name,gender,date_of_birth,alive,tree_id) 
-values ('Jan','Faatiga','L','Male','1970-01-01','Yes',1);
+values ('fn4','f','L','Male','1970-01-01','Yes',1);
 update Person set mother_id = 1,father_id=2 where person_id = 3;
 
 /* Insert new person with parent IDs */
 insert into Person(first_name,middle_name,last_name,gender,date_of_birth,alive,mother_id,father_id,tree_id) 
-values ('Joseph','T B','L','Male','1994-02-20','Yes',1,2,1);
+values ('j1','T B','L','Male','1994-02-20','Yes',1,2,1);
 insert into Person(first_name,middle_name,last_name,gender,date_of_birth,alive,mother_id,father_id,tree_id) 
-values ('Jeraldine','B','L','Female','1995-04-15','Yes',1,2,1);
+values ('j2','B','L','Female','1995-04-15','Yes',1,2,1);
 insert into Person(first_name,middle_name,last_name,gender,date_of_birth,alive,mother_id,father_id,tree_id) 
-values ('Justin','K','L','Male','2003-07-22','Yes',1,2,1);
+values ('j3','K','L','Male','2003-07-22','Yes',1,2,1);
 insert into Person(first_name,middle_name,last_name,gender,date_of_birth,alive,mother_id,father_id,tree_id) 
-values ('Janae','F','L','Female','2005-05-05','Yes',1,2,1);
+values ('j4','F','L','Female','2005-05-05','Yes',1,2,1);
 insert into Person(first_name,middle_name,last_name,gender,date_of_birth,alive,mother_id,father_id,tree_id) 
-values ('Jasmine','N','L','Female','2005-05-05','Yes',1,2,1);
+values ('j5','N','L','Female','2005-05-05','Yes',1,2,1);
 
 /* Update parent ids */
 update Person set mother_id = 3,father_id=4 where person_id = 5;
